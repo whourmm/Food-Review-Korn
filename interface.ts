@@ -48,11 +48,9 @@ export type FoodType =
 export interface RestaurantReview {
   id: string;
   restaurantId: string;
-  name: string;
-  foodType: string;
   images: string[];
   reviewerName: string;
-  categories: ReviewCategory[];
+  categoriesScore: ReviewCategory[];
   review?: string;
   date: string;
 }
@@ -67,6 +65,7 @@ export interface Restaurant {
   createdAt: string;
   categories: ReviewCategory[];
   overallScore: number;
+  foodType: FoodType;
 }
 /**
  * Example response type for /api/demo

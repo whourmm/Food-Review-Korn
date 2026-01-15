@@ -3,15 +3,16 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Plus, Search, X } from "lucide-react";
 import { RadarChart } from "@/components/RadarChart";
-import { RestaurantReview } from "@/interface";
+import { Restaurant, RestaurantReview } from "@/interface";
 import { useReviews } from "@/providers/reviews-context";
 import { ChevronDown } from "lucide-react";
 import { Calendar } from "lucide-react";
 import PlusButton from "@/components/button/PlusButton";
+import { MOCK_RESTAURANTS } from "@/mockdata";
 
 
 export default function MainPage() {
-  const { reviews } = useReviews();
+  const  reviews  = MOCK_RESTAURANTS;
  
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFoodType, setSelectedFoodType] = useState<string | null>(null);
@@ -20,7 +21,7 @@ export default function MainPage() {
 
 
 
-  const calculateAverageScore = (review: RestaurantReview): number => {
+  const calculateAverageScore = (review: Restaurant): number => {
     if (review.categories.length === 0) return 0;
     return (
       review.categories.reduce((sum, cat) => sum + cat.score, 0) /
@@ -37,16 +38,15 @@ export default function MainPage() {
   const filteredReviews = useMemo(() => {
     const filtered =  reviews.filter((review) => {
       const matchesSearch =
-        review.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        review.foodType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        review.reviewerName.toLowerCase().includes(searchQuery.toLowerCase());
+  
+        review.createdBy.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesFilter =
         selectedFoodType === null || review.foodType === selectedFoodType;
       return matchesSearch && matchesFilter;
     });
     return filtered.sort((a, b) => {
-      const dateA = new Date(a.date || 0).getTime();
-      const dateB = new Date(b.date || 0).getTime();
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
       return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
     });
     
@@ -324,11 +324,11 @@ export default function MainPage() {
                                 </span>
                               </div>
                               <p className="text-xs text-gray-500 mb-2">
-                                By {review.reviewerName}
+                                By {review.createdBy}
                               </p>
-                              {review.review && (
+                              {review.description && (
                                 <p className="text-sm text-gray-700 line-clamp-2 italic">
-                                  "{review.review}"
+                                  "{review.description}"
                                 </p>
                               )}
                             </div>

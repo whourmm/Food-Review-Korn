@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { RestaurantReview } from "@/interface";
+import { Restaurant, RestaurantReview } from "@/interface";
 
 type ReviewsContextType = {
-  reviews: RestaurantReview[];
-  handleAddReview: (review: RestaurantReview) => void;
+  reviews: Restaurant[];
+  handleAddReview: (review: Restaurant) => void;
 };
 
 export const ReviewsContext =
