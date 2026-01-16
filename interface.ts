@@ -41,7 +41,8 @@ export type FoodType =
   | "Thai"
   | "Korean"
   | "American"
-  | "Mediterranean";
+  | "Mediterranean"
+  | "Others";
 
 
 
