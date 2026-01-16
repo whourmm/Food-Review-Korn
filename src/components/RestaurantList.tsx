@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { RestaurantReview } from "@/interface";
-import ReviewCard from "./cards/RestaurantCard";
+import { Restaurant  } from "@/interface";
+import { ReviewCard } from "./cards/ReviewCard";
 
 interface ReviewsListPageProps {
-  reviews: RestaurantReview[];
+  reviews: Restaurant[];
 }
 
-export default function ReviewsList({ reviews }: ReviewsListPageProps) {
-  const uniqueFoods = Array.from(new Set(reviews.map((r) => r.foodType)));
+export default function RestaurantList({ reviews }: ReviewsListPageProps) {
+  const uniqueFoods = Array.from(new Set(reviews.map((r) => r.id)));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -17,13 +17,13 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Link
             to="/"
-            className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium mb-4"
+            className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium mb-4"
           >
             <ChevronLeft size={20} />
             Back to Review
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-indigo-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">🍽️</span>
             </div>
             <h1 className="text-3xl font-bold text-gray-900">
@@ -45,7 +45,7 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
             </p>
             <Link
               to="/"
-              className="inline-block mt-4 px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition"
+              className="inline-block mt-4 px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition"
             >
               Create Your First Review
             </Link>
@@ -58,7 +58,7 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
                 <div className="text-sm font-medium text-gray-600">
                   Total Reviews
                 </div>
-                <div className="text-3xl font-bold text-purple-600 mt-2">
+                <div className="text-3xl font-bold text-green-600 mt-2">
                   {reviews.length}
                 </div>
               </div>
@@ -66,7 +66,7 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
                 <div className="text-sm font-medium text-gray-600">
                   Food Types
                 </div>
-                <div className="text-3xl font-bold text-purple-600 mt-2">
+                <div className="text-3xl font-bold text-green-600 mt-2">
                   {uniqueFoods.length}
                 </div>
               </div>
@@ -74,7 +74,7 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
                 <div className="text-sm font-medium text-gray-600">
                   Unique Restaurants
                 </div>
-                <div className="text-3xl font-bold text-purple-600 mt-2">
+                <div className="text-3xl font-bold text-green-600 mt-2">
                   {new Set(reviews.map((r) => r.name)).size}
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function ReviewsList({ reviews }: ReviewsListPageProps) {
                           <span className="text-sm font-medium text-gray-600">
                             Avg Score:
                           </span>
-                          <span className="text-sm font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded">
+                          <span className="text-sm font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded">
                             {avgScore.toFixed(1)}/5
                           </span>
                         </div>

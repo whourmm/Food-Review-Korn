@@ -2,7 +2,7 @@ export function ReviewCard({ review }: { review: any }) {
   return (
     <div
       className="min-w-[320px] max-w-[320px]
-                 bg-white border rounded-xl shadow-sm
+                 bg-white rounded-xl shadow-sm
                  flex-shrink-0"
     >
       {review.images?.[0] && (

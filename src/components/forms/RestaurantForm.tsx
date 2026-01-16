@@ -20,6 +20,7 @@ export default function RestaurantForm({ onCreate, onChange }: RestaurantFormPro
     categories: [],
     overallScore: 0,
     foodType: "Others",
+    status: "draft",
   });
 
   return (
@@ -93,7 +94,7 @@ export default function RestaurantForm({ onCreate, onChange }: RestaurantFormPro
       <div className=" w-full h-full py-2 flex flex-col sm:flex-row sm:justify-around items-center gap-2">
       <button
         type="submit"
-        className="w-[40%] h-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
+        className="w-[40%] h-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium"
       >
         Create Restaurant
       </button>
