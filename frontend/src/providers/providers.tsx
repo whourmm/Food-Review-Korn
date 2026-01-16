@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/src/components/ui/toaster";
-import { Toaster as Sonner } from "@/src/components/ui/sonner";
-import { TooltipProvider } from "@/src/components/ui/tooltip";
+// import { Toaster } from "@/src/components/ui/toaster";
+// import { Toaster as Sonner } from "@/src/components/ui/sonner";
+// import { TooltipProvider } from "@/src/components/ui/tooltip";
 import { SessionProvider } from "next-auth/react";
 
 
@@ -22,16 +22,16 @@ export function AppProviders({
   return (
     
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+      {/* <TooltipProvider>
         <Toaster />
-        <Sonner />
+        <Sonner /> */}
         <SessionProvider>
         {/* ส่ง state ผ่าน Context */}
         
           {children}
           </SessionProvider>
         
-      </TooltipProvider>
+      {/* </TooltipProvider> */}
     </QueryClientProvider>
   );
 }
