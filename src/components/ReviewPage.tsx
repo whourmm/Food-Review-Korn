@@ -42,13 +42,13 @@ export default function ReviewPage({ reviews, onAddReview }: ReviewPageProps) {
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium transition"
+                className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition"
               >
                 <ChevronLeft size={20} />
                 Back
               </Link>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">🍽️</span>
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900">
@@ -94,7 +94,7 @@ export default function ReviewPage({ reviews, onAddReview }: ReviewPageProps) {
                         {review.images && review.images.length > 0 && (
                           <img
                             src={review.images[0]}
-                            alt={review.name}
+                            alt={review.id}
                             className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
@@ -103,11 +103,9 @@ export default function ReviewPage({ reviews, onAddReview }: ReviewPageProps) {
                         )}
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-900">
-                            {review.name}
+                            {review.id}
                           </h3>
-                          <p className="text-sm text-gray-600">
-                            {review.foodType}
-                          </p>
+                         
                           <p className="text-xs text-gray-500 mb-2">
                             By {review.reviewerName}
                           </p>
@@ -117,10 +115,10 @@ export default function ReviewPage({ reviews, onAddReview }: ReviewPageProps) {
                             </p>
                           )}
                           <div className="flex flex-wrap gap-2">
-                            {review.categories.map((cat, catIdx) => (
+                            {review.categoriesScore.map((cat, catIdx) => (
                               <span
                                 key={catIdx}
-                                className="inline-flex items-center gap-1 text-xs font-medium bg-purple-100 text-purple-700 px-2.5 py-1 rounded"
+                                className="inline-flex items-center gap-1 text-xs font-medium bg-green-100 text-green-700 px-2.5 py-1 rounded"
                               >
                                 {cat.name}:{" "}
                                 <span className="font-bold">{cat.score}/5</span>

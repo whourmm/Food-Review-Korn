@@ -22,6 +22,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     ],
     overallScore: 4.2,
     foodType: "Japanese",
+    status: "ate",
   },
   {
     id: "2",
@@ -44,6 +45,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     ],
     overallScore: 4.0,
     foodType: "American",
+    status: "plan",
   },
   {
     id: "3",
@@ -66,6 +68,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     ],
     overallScore: 4.4,
     foodType: "Thai",
+  status: "ate",
 
   },
   {
@@ -89,6 +92,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     ],
     overallScore: 4.0,
     foodType: "Mediterranean",
+    status: "cancelled",
   }
 ];
 export const MOCK_REVIEWS: RestaurantReview[] = [

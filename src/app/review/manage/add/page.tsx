@@ -24,6 +24,7 @@ export default function CreateRestaurantPage() {
     categories: [],
     overallScore: 0,
     foodType: "Others",
+    status: "draft",
   });
 
   const handleCreateRestaurant = (data: Restaurant) => {
@@ -38,6 +39,7 @@ export default function CreateRestaurantPage() {
       createdBy: "",
       createdAt: "",
       foodType: data.foodType,
+      status: "draft",
     };
 
     MOCK_RESTAURANTS.push(newRestaurant);
@@ -52,7 +54,7 @@ export default function CreateRestaurantPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link
             href="/"
-            className="flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium transition"
+            className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium transition"
           >
             <ChevronLeft size={20} />
             Back

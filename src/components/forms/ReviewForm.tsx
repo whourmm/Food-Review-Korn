@@ -1,234 +1,178 @@
 "use client";
 import { useState } from "react";
-import { X, Pencil, Check } from "lucide-react";
-import { RestaurantReview, ReviewCategory } from "@/interface";
+import { Plus, X } from "lucide-react";
+import { RestaurantReview, ReviewCategory, FOOD_TYPES, CATEGORY_TYPES } from "@/interface";
 import StarRating from "../StarRating";
-import { FOOD_TYPES } from "@/interface";
-import { CATEGORY_TYPES } from "@/interface";
 import { useSession } from "next-auth/react";
-
+import { uploadToCloudinary } from "@/src/libs/uploadToCloudinary";
 
 interface ReviewFormProps {
   onSubmit: (review: RestaurantReview) => void;
+  rid: string;
 }
 
-
-export function ReviewForm({ onSubmit, rid }: ReviewFormProps & { rid: string }) {
+export function ReviewForm({ onSubmit, rid }: ReviewFormProps) {
   const { data: session } = useSession();
-  const [reviewerName, setReviewerName] = useState(session?.user?.name || "");
+
+  const [reviewerName] = useState(session?.user?.name || "");
   const [name, setName] = useState("");
   const [foodType, setFoodType] = useState("");
-  const [imageUrl, setImageUrl] = useState([""]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [review, setReview] = useState("");
+  const [uploading, setUploading] = useState(false);
+
   const [categories, setCategories] = useState<ReviewCategory[]>(
-    CATEGORY_TYPES.map((cat) => ({ name: cat, score: 3 })),
+    CATEGORY_TYPES.map((cat) => ({ name: cat, score: 3 }))
   );
-  const [editingCategoryIndex, setEditingCategoryIndex] = useState<
-    number | null
-  >(null);
-  const [editingCategoryName, setEditingCategoryName] = useState("");
 
+  const handleScoreChange = (i: number, score: number) => {
+    const copy = [...categories];
+    copy[i].score = Math.max(1, Math.min(5, score));
+    setCategories(copy);
+  };
 
-  const handleRenameCategory = (index: number) => {
-    if (
-      editingCategoryName.trim() &&
-      !categories.some((c, i) => i !== index && c.name === editingCategoryName)
-    ) {
-      const updated = [...categories];
-      updated[index].name = editingCategoryName;
-      setCategories(updated);
-      setEditingCategoryIndex(null);
-      setEditingCategoryName("");
+  /* ---------- IMAGE UPLOAD ---------- */
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+
+      console.log("Uploaded image URL:", url);
+      setImageUrls((prev) => [...prev, url]);
+    } catch (err) {
+      alert("Upload failed");
+    } finally {
+      setUploading(false);
     }
   };
 
-  const handleScoreChange = (index: number, score: number) => {
-    const updated = [...categories];
-    updated[index].score = Math.max(1, Math.min(5, score));
-    setCategories(updated);
+  const removeImage = (index: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
+  /* ---------- SUBMIT ---------- */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      reviewerName.trim() &&
-      name.trim() &&
-      foodType.trim() &&
-      categories.length > 0
-    ) {
-      onSubmit({
-        id: crypto.randomUUID(),
-        restaurantId: rid,
-        reviewerName,
-        images: imageUrl ? imageUrl : [],
-        review: review.trim() || undefined,
-        categoriesScore: categories,
-        date: new Date().toISOString(),
-      });
-      setReviewerName("");
-      setName("");
-      setFoodType("");
-      setImageUrl([""]);
-      setReview("");
-      setCategories(CATEGORY_TYPES.map((cat) => ({ name: cat, score: 3 })));
-    }
+    if (!name || !foodType) return;
+
+    onSubmit({
+      id: crypto.randomUUID(),
+      restaurantId: rid,
+      reviewerName,
+      images: imageUrls,
+      review: review || undefined,
+      categoriesScore: categories,
+      date: new Date().toISOString(),
+    });
+
+    setName("");
+    setFoodType("");
+    setImageUrls([]);
+    setReview("");
+    setCategories(CATEGORY_TYPES.map((cat) => ({ name: cat, score: 3 })));
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
 
-      {/* Basic Info Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Restaurant Information
-        </h3>
+      {/* BASIC INFO */}
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Restaurant name"
+        className="w-full px-4 py-2.5 border border-gray-200 border-1 rounded-lg text-black"
+      />
 
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-2"
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {FOOD_TYPES.map((type) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => setFoodType(type)}
+            className={`px-4 py-2 rounded-lg ${foodType === type
+                ? "bg-green-600 text-white"
+                : "bg-gray-100 border border-gray-200 border-1"
+              }`}
           >
-            Restaurant Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., La Bella Trattoria"
-            className="w-full px-4  text-black py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-          />
-        </div>
+            {type}
+          </button>
+        ))}
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Type of Food
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {FOOD_TYPES.map((type) => (
+      {/* IMAGE UPLOAD */}
+      <div>
+        <label className="block mb-2 font-medium">Upload Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment" // 👉 opens camera on phone (rear camera)
+          onChange={async (e) => {
+            if (!e.target.files?.[0]) return;
+
+            const file = e.target.files[0];
+            const url = await uploadToCloudinary(file);
+
+            setImageUrls((prev) => [...prev, url]);
+          }}
+          className="block w-full text-sm text-gray-600"
+        />
+        {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
+
+        <div className="grid grid-cols-3 gap-3 mt-4">
+          {imageUrls.map((url, i) => (
+            <div key={i} className="relative">
+              <img
+                src={url}
+                className="w-full h-24 object-cover rounded-lg border border-gray-200 border-1"
+              />
+
               <button
-                key={type}
                 type="button"
-                onClick={() => setFoodType(type)}
-                className={`px-4 text-black  py-2.5 rounded-lg font-medium transition ${
-                  foodType === type
-                    ? "bg-purple-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
-                }`}
+                onClick={() => removeImage(i)}
+                className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1"
               >
-                {type}
+                <X size={14} />
               </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="imageUrl"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Image URL <span className="text-gray-500">(Optional)</span>
-          </label>
-          <input
-            id="imageUrl"
-            type="url"
-            value={imageUrl[0]}
-            onChange={(e) => setImageUrl([...imageUrl, e.target.value])}
-            placeholder="https://example.com/image.jpg"
-            className="w-full text-black  px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="review"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Review <span className="text-gray-500">(Optional)</span>
-          </label>
-          <textarea
-            id="review"
-            value={review}
-            onChange={(e) => setReview(e.target.value)}
-            placeholder="Share your thoughts about this restaurant... (optional)"
-            rows={4}
-            className="w-full text-black  px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
-          />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Categories Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Review
-          </h3>
-        
-        </div>
+      {/* REVIEW */}
+      <textarea
+        value={review}
+        onChange={(e) => setReview(e.target.value)}
+        rows={4}
+        className="w-full px-4 py-2.5 border border-gray-200 border-1 rounded-lg text-black"
+        placeholder="Your review (optional)"
+      />
 
-        {/* Categories Table */}
-        <div className="overflow-x-auto border border-gray-300 rounded-lg">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-purple-600 text-white">
-                <th className="px-4 py-3 text-left font-semibold">Category</th>
-                <th className="px-4 py-3 text-center font-semibold">
-                  Score
-                </th>
-                
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((category, index) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                >
-                  <td className="px-4 py-3 border-t border-gray-200">
-                    {editingCategoryIndex === index ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={editingCategoryName}
-                          onChange={(e) =>
-                            setEditingCategoryName(e.target.value)
-                          }
-                          className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                          autoFocus
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRenameCategory(index)}
-                          className="p-1 bg-green-600 hover:bg-green-700 text-white rounded transition"
-                        >
-                          <Check size={16} />
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="font-medium text-gray-900">
-                        {category.name}
-                      </span>
-                    )}
-                  </td>
-               <td className="px-4 py-3 border-t border-gray-200 text-center">
-  <StarRating
-    value={category.score}
-    onChange={(score) => handleScoreChange(index, score)}
-  />
-</td>
-                  
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* CATEGORY SCORES */}
+      <table className="w-full border border-gray-200 border-1 rounded-lg overflow-hidden">
+        <thead className="bg-green-600 text-white">
+          <tr>
+            <th className="p-3 text-left">Category</th>
+            <th className="p-3 text-center">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categories.map((cat, i) => (
+            <tr key={i} className="even:bg-gray-50">
+              <td className="p-3">{cat.name}</td>
+              <td className="p-3 text-center">
+                <StarRating
+                  value={cat.score}
+                  onChange={(s) => handleScoreChange(i, s)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {/* Submit Button */}
       <button
         type="submit"
-        disabled={!reviewerName.trim() || !name.trim() || !foodType.trim()}
-        className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition"
+        className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
       >
         Submit Review
       </button>

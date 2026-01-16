@@ -41,10 +41,10 @@ export function RadarChart({ categories, imageUrl }: RadarChartProps) {
       {
         label: 'Review Scores',
         data: categories.map(c => c.score),
-        borderColor: '#7c3aed',
-        backgroundColor: 'rgba(124, 58, 237, 0.15)',
+        borderColor: '#20c464',
+        backgroundColor: 'rgba(60, 117, 55, 0.15)',
         borderWidth: 2.5,
-        pointBackgroundColor: '#7c3aed',
+        pointBackgroundColor: '#3aeda2',
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
         pointRadius: 5,

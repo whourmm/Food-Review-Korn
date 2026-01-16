@@ -58,19 +58,19 @@ export default function FlipCard({
       >
         {/* Front */}
         <div
-          className="absolute inset-0 bg-white rounded-xl border shadow-lg flex flex-col items-center justify-center gap-3"
+          className="absolute inset-0 bg-white rounded-xl  shadow-lg flex flex-col items-center justify-center gap-3"
           style={{
             backfaceVisibility: "hidden",
           }}
         >
-          <div className="text-purple-600">{icon}</div>
+          <div className="text-green-600">{icon}</div>
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           <p className="text-sm text-gray-500">Scroll to reveal</p>
         </div>
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-white rounded-xl border shadow-lg"
+          className="absolute inset-0 bg-white rounded-xl  shadow-lg"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",

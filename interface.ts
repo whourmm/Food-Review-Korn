@@ -3,6 +3,8 @@ export interface ReviewCategory {
   score: number;
 }
 
+export type EatStatus = "plan" | "ate" | "cancelled" | "draft";
+
 export const FOOD_TYPES = [
   "Italian",
   "Japanese",
@@ -67,6 +69,7 @@ export interface Restaurant {
   categories: ReviewCategory[];
   overallScore: number;
   foodType: FoodType;
+  status: EatStatus; 
 }
 /**
  * Example response type for /api/demo

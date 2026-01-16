@@ -1,73 +1,87 @@
-import  { RestaurantReview } from "@/interface";
+import Link from "next/link";
+import { Restaurant } from "@/interface";
 
-interface ReviewCardProps {
-  review: RestaurantReview;
+interface Props {
+  review: Restaurant;
 }
 
-export default function RestaurantCard({ review }: ReviewCardProps) {
-  const avgScore =
-    review.categories.reduce((sum, c) => sum + c.score, 0) /
-    review.categories.length;
+export default function RestaurantCard({ review }: Props) {
+  const calculateAverageScore = (): number => {
+    if (review.categories.length === 0) return 0;
+    return (
+      review.categories.reduce((sum, cat) => sum + cat.score, 0) /
+      review.categories.length
+    );
+  };
+
+  const avgScore = calculateAverageScore();
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
-      {review.images && review.images.length > 0 && (
-        <img
-          src={review.images[0]}
-          alt={review.name}
-          className="w-full h-48 object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
-        />
-      )}
-      <div className="p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            {review.name}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1">{review.foodType}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            Reviewed by: {review.reviewerName}
-          </p>
-        </div>
+    <div className="h-96">
+      <Link href={`/review/${review.id}`} className="block h-full">
+        <div className="relative w-full h-full">
+          <div className={`absolute w-full h-full bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between ${review.status === "ate" ? "border-green-600" : ""}`}>
+            {/* Image */}
+            {review.images && review.images.length > 0 ? (
+              <img
+                src={review.images[0]}
+                alt={review.name}
+                className="w-full h-40 rounded-lg object-cover mb-4"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            ) : (
+              <div className="w-full h-40 rounded-lg bg-gray-200 mb-4 flex items-center justify-center">
+                <span className="text-4xl">🍽️</span>
+              </div>
+            )}
 
-        {review.review && (
-          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-gray-700 italic">"{review.review}"</p>
-          </div>
-        )}
-
-        <div className="mb-4 p-3 bg-purple-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">
-              Average Score
-            </span>
-            <span className="text-lg font-bold text-purple-600">
-              {avgScore.toFixed(1)}/5
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <h4 className="text-sm font-semibold text-gray-900">
-            Category Scores
-          </h4>
-          <div className="space-y-1.5">
-            {review.categories.map((cat, catIdx) => (
-              <div
-                key={catIdx}
-                className="flex items-center justify-between text-sm"
-              >
-                <span className="text-gray-600">{cat.name}</span>
-                <span className="font-semibold text-purple-600">
-                  {cat.score}/5
+            {/* Content */}
+            <div className="flex-1">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 line-clamp-2 flex-1">
+                  {review.name}
+                </h3>
+                <span className="text-xs font-bold text-white bg-green-600 px-2.5 py-1 rounded-full whitespace-nowrap">
+                  {review.foodType}
                 </span>
               </div>
-            ))}
+
+              <p className="text-xs text-gray-500 mb-2">
+                By {review.createdBy}
+              </p>
+
+              {review.description && (
+                <p className="text-sm text-gray-700 line-clamp-2 italic">
+                  "{review.description}"
+                </p>
+              )}
+            </div>
+              {review.status === "ate" ? (
+        
+            <div className="mt-4 p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">
+                  Overall Score
+                </span>
+                <span className="text-2xl font-bold text-green-600">
+                  {avgScore.toFixed(1)}/5
+                </span>
+              </div>
+            </div>
+            ) : (
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-center">  
+                <span className="text-sm font-medium text-gray-700">
+                  Let's eat here!
+                </span>
+              </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 }
