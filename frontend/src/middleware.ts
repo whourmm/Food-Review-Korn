@@ -1,17 +1,10 @@
-"use client"
-import { useSession } from "next-auth/react";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { withAuth } from "next-auth/middleware";
 
-export async function middleware(req: NextRequest) {
-  const {data : session} = useSession();
-
-  if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  return NextResponse.next();
-}
+export default withAuth({
+  callbacks: {
+    authorized: ({ token }) => !!token,
+  },
+});
 
 export const config = {
   matcher: ["/review/:path*"],

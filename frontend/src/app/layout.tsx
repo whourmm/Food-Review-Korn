@@ -1,6 +1,7 @@
 import "./globals.css";
 import { AppProviders } from "@/src/providers/providers";
 import { Noto_Sans_Thai } from "next/font/google";
+import Navbar from "@/src/components/Navbar";
 
 
 const notoSansThai = Noto_Sans_Thai({
@@ -19,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="th">
       <body className={notoSansThai.className}>
-        <AppProviders>{children}</AppProviders>
+        
+        <AppProviders><div className=""><Navbar /></div>{children}</AppProviders>
       </body>
     </html>
   );
