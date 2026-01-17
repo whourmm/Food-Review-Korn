@@ -179,15 +179,15 @@ const workEnd = workEndBase;
         workEnd
       );
 
-      console.log(
-  `[${member.email}] ${date} free slots:`,
-  freeSlots.map(s => `${s.start}-${s.end}`).join(", ")
-);
+//       console.log(
+//   `[${member.email}] ${date} free slots:`,
+//   freeSlots.map(s => `${s.start}-${s.end}`).join(", ")
+// );
 
-console.log(
-  `[${member.email}] ${date} free hours:`,
-  slotsToHours(freeSlots)
-);
+// console.log(
+//   `[${member.email}] ${date} free hours:`,
+//   slotsToHours(freeSlots)
+// );
 
       availability.push({
         date,

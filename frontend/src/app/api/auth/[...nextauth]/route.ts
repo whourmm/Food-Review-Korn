@@ -55,7 +55,7 @@ export const authOptions = {
   ],
 
   callbacks: {
-  async jwt({ token, account, profile } : {token : any, account : any, profile: any}) {
+  async jwt({ token, account, profile } : {token : any, account : any, profile?: any}) {
     // 1️⃣ Initial Google login
     if (account?.provider === "google") {
     token.accessToken = account.access_token;
