@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "types", "**/*.ts", "**/*.tsx"
-, "src/libs/prisma/schema.prisma"  ],
+    "types", "**/*.ts", "**/*.tsx", "next-env.d.ts", "**/*.ts", "**/*.tsx", "types"
+, "src/libs/prisma/schema.prisma", "src/app/api/google-calendar/heartbeat"  ],
   "exclude": ["node_modules"]
 }
