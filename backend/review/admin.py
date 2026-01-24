@@ -1,4 +1,4 @@
-"""Admin configuration for the RAI app models."""
+"""Admin configuration for the food review app models."""
 from django.contrib import admin
 from .models import Restaurant, RestaurantReview
 

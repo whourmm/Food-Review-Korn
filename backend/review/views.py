@@ -36,8 +36,8 @@ class ActiveUserEndpoint(APIView):
 
 class AddRestaurantEndpoint(APIView):
     """Endpoint to add restuarant"""
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=AddRestaurantSerializer,
@@ -89,3 +89,17 @@ class CreateRestaurantReviewEndpoint(APIView):
             response_serializer = RestaurantReviewSerializer(review)
             return Response(response_serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
+
+class ListRestaurantsEndpoint(APIView):
+    """Endpoint to list all restaurants"""
+
+    @extend_schema(
+        responses={
+            200: RestaurantSerializer(many=True),
+        },
+    )
+    def get(self, request):
+        restaurants = Restaurant.objects.all()
+        serializer = RestaurantSerializer(restaurants, many=True)
+        return Response(serializer.data, status=200)
