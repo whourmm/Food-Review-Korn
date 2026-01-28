@@ -1,4 +1,4 @@
-"""Admin configuration for the RAI app models."""
+"""Admin configuration for the food review app models."""
 from django.contrib import admin
 from .models import Restaurant, RestaurantReview
 
@@ -8,7 +8,7 @@ class RestaurantAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'location', 'overall_score', 'created_by', 'created_at']
     search_fields = ['name', 'location', 'created_by']
     readonly_fields = ['id', 'created_at']
-    list_filter = ['categories', 'overall_score', 'created_at']
+    list_filter = ['created_at']
 
 @admin.register(RestaurantReview)
 class RestaurantReviewAdmin(admin.ModelAdmin):

@@ -3,12 +3,16 @@ from .models import Restaurant, RestaurantReview
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
     class Meta:
         model = Restaurant
         fields = '__all__'
 
 
 class RestaurantReviewSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
+
     class Meta:
         model = RestaurantReview
         fields = '__all__'
