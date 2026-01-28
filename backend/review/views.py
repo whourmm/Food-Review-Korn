@@ -36,8 +36,8 @@ class ActiveUserEndpoint(APIView):
 
 class AddRestaurantEndpoint(APIView):
     """Endpoint to add restuarant"""
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=AddRestaurantSerializer,

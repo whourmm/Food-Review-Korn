@@ -26,7 +26,7 @@ class RestaurantReview(models.Model):
     reviewer_name = models.CharField(max_length=255)
     categories_score = ArrayField(models.CharField(max_length=255))
     review = models.TextField(blank=True, null=True)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=timezone.now)
 
     class Meta:
         managed = False

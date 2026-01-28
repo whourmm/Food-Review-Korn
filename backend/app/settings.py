@@ -113,7 +113,6 @@ REST_FRAMEWORK = {
         # 'app.permissions.CustomPermission'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
@@ -123,6 +122,16 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for food reviews',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'IGNORED_AUTH_SCHEMAS': ['oauth2'],
+    'DISABLE_ERRORS': True,
+    'SERVE_AUTHENTICATION': None,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'displayOperationId': True,
+        'defaultModelsExpandDepth': 1,
+        'defaultModelExpandDepth': 1,
+    },
 }
 
 MIGRATION_MODULES = {
