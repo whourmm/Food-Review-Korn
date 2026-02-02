@@ -7,3 +7,4 @@ drf-spectacular==0.29.0
 django-storages==1.14.2
 django-mongodb-backend==6.0.0
 pymongo==4.16.0
+uvicorn==0.40.0
