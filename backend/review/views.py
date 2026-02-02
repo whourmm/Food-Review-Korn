@@ -93,6 +93,8 @@ class CreateRestaurantReviewEndpoint(APIView):
 
 class ListRestaurantsEndpoint(APIView):
     """Endpoint to list all restaurants"""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         responses={
