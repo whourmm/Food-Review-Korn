@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: food-review-api
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn app.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: DB_CONNECTION_STRING
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: food-review-korn.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://food-review-korn.vercel.app
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://food-review-korn.vercel.app
+      - key: RENDER_EXTERNAL_HOSTNAME
+        sync: false
