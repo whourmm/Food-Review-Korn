@@ -24,9 +24,10 @@ class AddRestaurantSerializer(serializers.Serializer):
     location = serializers.CharField(max_length=255)
     images = serializers.ListField(child=serializers.CharField())
     created_by = serializers.CharField(max_length=255)
-    categories = serializers.ListField(child=serializers.DictField())
-    overall_score = serializers.FloatField()
+    categories = serializers.ListField(child=serializers.DictField(), default=list)
+    overall_score = serializers.FloatField(default=0)
     food_type = serializers.CharField(max_length=255)
+    status = serializers.CharField(max_length=50, default='draft')
 
 
 class ActiveUserResponseSerializer(serializers.Serializer):

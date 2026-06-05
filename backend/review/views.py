@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from django.shortcuts import get_object_or_404
 from .models import Restaurant, RestaurantReview
 from .serializers import (
     RestaurantSerializer,
@@ -55,9 +56,10 @@ class AddRestaurantEndpoint(APIView):
                 location=serializer.validated_data['location'],
                 images=serializer.validated_data['images'],
                 created_by=serializer.validated_data['created_by'],
-                categories=serializer.validated_data['categories'],
-                overall_score=serializer.validated_data['overall_score'],
-                food_type=serializer.validated_data['food_type']
+                categories=serializer.validated_data.get('categories', []),
+                overall_score=serializer.validated_data.get('overall_score', 0),
+                food_type=serializer.validated_data['food_type'],
+                status=serializer.validated_data.get('status', 'draft'),
             )
             response_serializer = RestaurantSerializer(restaurant)
             return Response(response_serializer.data, status=201)
@@ -104,4 +106,41 @@ class ListRestaurantsEndpoint(APIView):
     def get(self, request):
         restaurants = Restaurant.objects.all()
         serializer = RestaurantSerializer(restaurants, many=True)
+        return Response(serializer.data, status=200)
+
+
+class RestaurantDetailEndpoint(APIView):
+    """Endpoint to get a single restaurant by ID"""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={
+            200: RestaurantSerializer,
+            404: ErrorResponseSerializer,
+        },
+    )
+    def get(self, request, pk):
+        restaurant = get_object_or_404(Restaurant, pk=pk)
+        serializer = RestaurantSerializer(restaurant)
+        return Response(serializer.data, status=200)
+
+
+class ListReviewsByRestaurantEndpoint(APIView):
+    """Endpoint to list reviews for a given restaurant_id"""
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={
+            200: RestaurantReviewSerializer(many=True),
+        },
+    )
+    def get(self, request):
+        restaurant_id = request.query_params.get('restaurant_id')
+        if restaurant_id:
+            reviews = RestaurantReview.objects.filter(restaurant_id=restaurant_id)
+        else:
+            reviews = RestaurantReview.objects.all()
+        serializer = RestaurantReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=200)
