@@ -4,14 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import RestaurantForm from "@/src/components/forms/RestaurantForm";
 import RestaurantPreview from "@/src/components/preview/RestaurantPreview";
 import { Restaurant } from "@/interface";
-import { MOCK_RESTAURANTS } from "@/mockdata";
 
 export default function CreateRestaurantPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [preview, setPreview] = useState<Restaurant>({
     id: "",
@@ -27,29 +30,43 @@ export default function CreateRestaurantPage() {
     status: "draft",
   });
 
-  const handleCreateRestaurant = (data: Restaurant) => {
-    const newRestaurant: Restaurant = {
-      id: crypto.randomUUID(),
-      name: data.name,
-      description: data.description,
-      images: data.images,
-      location: data.location,
-      categories: [],
-      overallScore: 0,
-      createdBy: "",
-      createdAt: "",
-      foodType: data.foodType,
-      status: "draft",
-    };
+  const handleCreateRestaurant = async (data: Restaurant) => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/restaurants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          description: data.description,
+          location: data.location,
+          images: data.images,
+          createdBy: session?.user?.name ?? "",
+          categories: [],
+          overallScore: 0,
+          foodType: data.foodType,
+          status: "draft",
+        }),
+      });
 
-    MOCK_RESTAURANTS.push(newRestaurant);
+      if (!res.ok) {
+        const err = await res.json();
+        setError(JSON.stringify(err));
+        return;
+      }
 
-    router.push(`/restaurant/${newRestaurant.id}`);
+      const created: Restaurant = await res.json();
+      router.push(`/review/${created.id}`);
+    } catch (err) {
+      setError("Failed to connect to server.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link
@@ -69,10 +86,14 @@ export default function CreateRestaurantPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* LEFT — Live Preview */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900">
               Live Preview
@@ -86,12 +107,15 @@ export default function CreateRestaurantPage() {
             />
           </div>
 
-          {/* RIGHT — Form */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <RestaurantForm
-              onCreate={handleCreateRestaurant}
-              onChange={setPreview}
-            />
+            {submitting ? (
+              <p className="text-gray-500 text-center py-8">Creating restaurant...</p>
+            ) : (
+              <RestaurantForm
+                onCreate={handleCreateRestaurant}
+                onChange={setPreview}
+              />
+            )}
           </div>
         </div>
       </div>
