@@ -34,7 +34,7 @@ export async function GET(
     const data = await res.json();
     const results = Array.isArray(data) ? data : (data.results ?? []);
     return NextResponse.json(results.map(transformReview));
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Backend unavailable" }, { status: 503 });
   }
 }

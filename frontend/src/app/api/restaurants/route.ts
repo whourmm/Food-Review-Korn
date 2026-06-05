@@ -31,7 +31,7 @@ export async function GET() {
     const data = await res.json();
     const results = Array.isArray(data) ? data : (data.results ?? []);
     return NextResponse.json(results.map(transformRestaurant));
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Backend unavailable" }, { status: 503 });
   }
 }
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     }
     const data = await res.json();
     return NextResponse.json(transformRestaurant(data), { status: 201 });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Backend unavailable" }, { status: 503 });
   }
 }

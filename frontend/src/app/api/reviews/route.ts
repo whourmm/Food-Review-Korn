@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
     const data = await res.json();
     return NextResponse.json(data, { status: 201 });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Backend unavailable" }, { status: 503 });
   }
 }

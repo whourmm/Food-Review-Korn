@@ -34,7 +34,7 @@ export async function GET(
     }
     const data = await res.json();
     return NextResponse.json(transformRestaurant(data));
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Backend unavailable" }, { status: 503 });
   }
 }
